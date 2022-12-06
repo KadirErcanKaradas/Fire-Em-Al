@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
     public GameStage GameStage { get; private set; }
     public Stats Stats { get; private set; }
     public List<GameObject> characters = new List<GameObject>();
-    public bool isVisible = false;
+    public GameObject poof;
 
     private void Start()
     {
@@ -19,10 +19,9 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if (characters != null)
-        {
-            characters[0].SetActive(true);
-        }
+        if (characters == null) return;
+        characters[0].SetActive(true);
+
     }
 
     public void SetGameStage(GameStage gameStage)
@@ -51,4 +50,4 @@ public class GameManager : Singleton<GameManager>
 }
 
 public enum GameStage { Empty,Hiring, Promote }
-public enum Stats{Bad,Good,Perfect}
+public enum Stats{Bad,Good}

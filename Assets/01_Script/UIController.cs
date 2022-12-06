@@ -10,15 +10,21 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject HiringPanel;
     [SerializeField] private GameObject PromotePanel;
     [SerializeField] private GameObject correctText;
+    [SerializeField] private GameObject badDecisionText;
+    [SerializeField] private GameObject goodJobText;
 
     private void OnEnable()
     {
-        GameEvent.Correct += CorrectShow;
+        GameEvent.Green += TextGoodShow;
+        GameEvent.Red += TextBadShow;
+        GameEvent.Panel += ActivePanel;
     }
 
     private void OnDisable()
     {
-        GameEvent.Correct -= CorrectShow;
+        GameEvent.Green -= TextGoodShow;
+        GameEvent.Red -= TextBadShow;
+        GameEvent.Panel -= ActivePanel;
     }
 
     private void Start()
@@ -26,51 +32,82 @@ public class UIController : MonoBehaviour
         manager = GameManager.Instance;
     }
 
-    private void Update()
+    private void ActivePanel()
     {
-        StartCoroutine(ActivePanel());
+        StartCoroutine(ActivePanelWait());
     }
-
-    private IEnumerator ActivePanel()
+    private IEnumerator ActivePanelWait()
     {
         if (manager.GameStage == GameStage.Hiring)
         {
             yield return new WaitForSeconds(1.5f);
             HiringPanel.SetActive(true);
             HiringPanel.transform.DOScale(1.2f, 1f);
-            manager.SetGameStage(GameStage.Empty);
         }
         else if (manager.GameStage == GameStage.Promote)
         {
             yield return new WaitForSeconds(1.5f);
             PromotePanel.SetActive(true);
             PromotePanel.transform.DOScale(1.2f, 1f);
-            manager.SetGameStage(GameStage.Empty);
         }
     }
 
     public void GreenButton()
     {
-        if (manager.Stats == Stats.Bad)
-            GameEvent.Wrong();
-        else
-            GameEvent.Correct();
+        GameEvent.Green();
     }
 
     public void RedButton()
     {
-        if (manager.Stats == Stats.Bad)
-            GameEvent.Correct();
-        else
-            GameEvent.Wrong();
+        GameEvent.Red();
     }
 
-    public void CorrectShow()
+    public void TextGoodShow()
     {
         PromotePanel.SetActive(false);
         HiringPanel.SetActive(false);
+        if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Hiring)
+        {
+            TextEdit(correctText);
+        }
+        else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Hiring)
+        {
+            TextEdit(badDecisionText);
+        }
+        else if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Promote)
+        {
+            TextEdit(goodJobText);
+        }
+        else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Promote)
+        {
+            TextEdit(correctText);
+        }
+    }
+    public void TextBadShow()
+    {
+        PromotePanel.SetActive(false);
+        HiringPanel.SetActive(false);
+        if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Hiring)
+        {
+            TextEdit(badDecisionText);
+        }
+        else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Hiring)
+        {
+            TextEdit(correctText);
+        }
+        else if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Promote)
+        {
+            TextEdit(correctText);
+        }
+        else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Promote)
+        {
+            TextEdit(goodJobText);
+        }
+    }
 
-        correctText.SetActive(true);
-        correctText.transform.DOScale(1, 2).OnComplete(() => correctText.transform.DOScale(0, 1));
+    public void TextEdit(GameObject obj)
+    {
+        obj.SetActive(true);
+        obj.transform.DOScale(1, 2).OnComplete(() => obj.transform.DOScale(0, 1));
     }
 }

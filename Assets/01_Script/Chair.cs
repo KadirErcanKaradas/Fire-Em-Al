@@ -9,6 +9,10 @@ public class Chair : MonoBehaviour
   {
     var interactable = other.GetComponent<IInteractable>();
     if (interactable != null)
+    {
       interactable.Interact();
+      GameEvent.Panel();
+    }
+
   }
 }

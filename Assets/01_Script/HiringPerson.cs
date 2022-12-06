@@ -7,18 +7,21 @@ public class HiringPerson : MonoBehaviour,IInteractable
     private GameManager manager;
     private Animator anim;
     [SerializeField] private GameObject starFallPart;
-    [SerializeField] private int experience;
-    [SerializeField] private int salary;
-    [SerializeField] private int references;
+    [SerializeField] private GameObject sadEmojiPart;
+    [SerializeField,Range(0,10)] private int experience;
+    [SerializeField,Range(0,10)] private int salary;
+    [SerializeField,Range(0,10)] private int references;
 
     private void OnEnable()
     {
-        GameEvent.Correct += AnimatorAndPart;
+        GameEvent.Green += GreenChoice;
+        GameEvent.Red += RedChoice;
     }
 
     private void OnDisable()
     {
-        GameEvent.Correct -= AnimatorAndPart;
+        GameEvent.Green -= GreenChoice;
+        GameEvent.Red -= RedChoice;
     }
 
     private void Start()
@@ -28,10 +31,8 @@ public class HiringPerson : MonoBehaviour,IInteractable
         int stat = experience + salary + references;
         if(stat<=15)
             manager.SetStats(Stats.Bad);
-        else if(stat<=25)
+        else if(stat<=30)
             manager.SetStats(Stats.Good);
-        else
-            manager.SetStats(Stats.Perfect);
     }
 
     public void Interact()
@@ -39,17 +40,21 @@ public class HiringPerson : MonoBehaviour,IInteractable
         manager.SetGameStage(GameStage.Hiring);
     }
 
-    public void AnimatorAndPart()
+    private void GreenChoice()
     {
-        StartCoroutine(WaitPartAndAnim());
+        anim.SetBool("Yes",true);
+        StartCoroutine(PlayParticle());
+    } 
+    private void RedChoice()
+    {
+        anim.SetBool("No",true);
+        StartCoroutine(PlayParticle());
+    }
+    private IEnumerator PlayParticle()
+    {
+        yield return new WaitForSeconds(2f);
+        if(manager.characters.Count >1)
+            gameObject.SetActive(false);
     }
 
-    public IEnumerator WaitPartAndAnim()
-    {
-        starFallPart.SetActive(true);
-        anim.SetBool("Yes",true);
-        yield return new WaitForSeconds(2f);
-        manager.characters.Remove(gameObject);
-        gameObject.SetActive(false);
-    }
 }
