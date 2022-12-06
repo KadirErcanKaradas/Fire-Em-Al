@@ -11,7 +11,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject PromotePanel;
     [SerializeField] private GameObject correctText;
     [SerializeField] private GameObject badDecisionText;
+    [SerializeField] private GameObject hrTaskCompletedText;
     [SerializeField] private GameObject goodJobText;
+    [SerializeField] private GameObject starFallPart;
 
     private void OnEnable()
     {
@@ -30,6 +32,12 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         manager = GameManager.Instance;
+    }
+
+    private void Update()
+    {
+        if(manager.buttonTap)
+            hrTaskCompletedText.SetActive(true);
     }
 
     private void ActivePanel()
@@ -54,11 +62,15 @@ public class UIController : MonoBehaviour
 
     public void GreenButton()
     {
+        if(manager.characters.Count == 2)
+            manager.buttonTap = true;
         GameEvent.Green();
     }
 
     public void RedButton()
     {
+        if(manager.characters.Count == 2)
+            manager.buttonTap = true;
         GameEvent.Red();
     }
 
@@ -68,6 +80,7 @@ public class UIController : MonoBehaviour
         HiringPanel.SetActive(false);
         if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Hiring)
         {
+            starFallPart.SetActive(true);
             TextEdit(correctText);
         }
         else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Hiring)
@@ -76,6 +89,7 @@ public class UIController : MonoBehaviour
         }
         else if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Promote)
         {
+            starFallPart.SetActive(true);
             TextEdit(goodJobText);
         }
         else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Promote)
@@ -93,6 +107,7 @@ public class UIController : MonoBehaviour
         }
         else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Hiring)
         {
+            starFallPart.SetActive(true);
             TextEdit(correctText);
         }
         else if (manager.Stats == Stats.Good && manager.GameStage == GameStage.Promote)
@@ -101,6 +116,7 @@ public class UIController : MonoBehaviour
         }
         else if (manager.Stats == Stats.Bad && manager.GameStage == GameStage.Promote)
         {
+            starFallPart.SetActive(true);
             TextEdit(goodJobText);
         }
     }

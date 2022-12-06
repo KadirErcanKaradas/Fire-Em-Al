@@ -6,7 +6,6 @@ public class HiringPerson : MonoBehaviour,IInteractable
 {
     private GameManager manager;
     private Animator anim;
-    [SerializeField] private GameObject starFallPart;
     [SerializeField] private GameObject sadEmojiPart;
     [SerializeField,Range(0,10)] private int experience;
     [SerializeField,Range(0,10)] private int salary;
@@ -43,18 +42,22 @@ public class HiringPerson : MonoBehaviour,IInteractable
     private void GreenChoice()
     {
         anim.SetBool("Yes",true);
-        StartCoroutine(PlayParticle());
+        StartCoroutine(RemoveCha());
     } 
     private void RedChoice()
     {
+        sadEmojiPart.SetActive(true);
         anim.SetBool("No",true);
-        StartCoroutine(PlayParticle());
+        StartCoroutine(RemoveCha());
     }
-    private IEnumerator PlayParticle()
+    private IEnumerator RemoveCha()
     {
         yield return new WaitForSeconds(2f);
-        if(manager.characters.Count >1)
+        if(manager.characters.Count > 2)
+        {
             gameObject.SetActive(false);
+            manager.characters.Remove(gameObject);
+        }
     }
 
 }

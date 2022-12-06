@@ -6,7 +6,6 @@ public class PromotePerson : MonoBehaviour,IInteractable
 {
     private GameManager manager;
     private Animator anim;
-    [SerializeField] private GameObject starFallPart;
     [SerializeField] private GameObject angryEmojiPart;
     [SerializeField,Range(0,10)] private int performance;
     [SerializeField,Range(0,10)] private int salary;
@@ -44,6 +43,7 @@ public class PromotePerson : MonoBehaviour,IInteractable
     } 
     private void RedChoice()
     {
+        angryEmojiPart.SetActive(true);
         anim.SetBool("No",true);
         StartCoroutine(PlayParticle());
     }
@@ -51,7 +51,10 @@ public class PromotePerson : MonoBehaviour,IInteractable
     private IEnumerator PlayParticle()
     {
         yield return new WaitForSeconds(2f);
-        if(manager.characters.Count >1)
+        if (manager.characters.Count > 2)
+        {
             gameObject.SetActive(false);
+            manager.characters.Remove(gameObject);
+        }
     }
 }

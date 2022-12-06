@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -10,20 +12,35 @@ public class GameManager : Singleton<GameManager>
     public GameStage GameStage { get; private set; }
     public Stats Stats { get; private set; }
     public List<GameObject> characters = new List<GameObject>();
-    public GameObject poof;
+    private Camera cam;
+    public bool buttonTap;
 
     private void Start()
     {
+        cam = Camera.main;
         SetGameStage(GameStage.Empty);
     }
 
     private void Update()
     {
-        if (characters == null) return;
+        if (characters.Count == 0) return;
         characters[0].SetActive(true);
+
+        if (characters.Count == 2 && buttonTap)
+        {
+            StartCoroutine(LoadScene());
+        }
 
     }
 
+    public IEnumerator LoadScene()
+    {
+        yield return new WaitForSeconds(2f);
+        for (int i = 0; i < cam.gameObject.transform.childCount; i++)
+        {
+            cam.gameObject.transform.GetChild(i).gameObject.SetActive(true);
+        }
+    }
     public void SetGameStage(GameStage gameStage)
     {
         GameStage = gameStage;
